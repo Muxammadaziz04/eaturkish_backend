@@ -1,15 +1,16 @@
 const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
+const { getFoodsModel } = require("../models/foods.models");
 
 const getFoods = async (req, res, next) => {
     try {
-        // const response = await getCategoriesModel()
+        const response = await getFoodsModel()
 
-        // if(response.error) return next(response)
+        if (response.error) return next(response)
 
-        // res.status(201).send({
-        //     status: 200,
-        //     data: response
-        // })
+        res.status(200).send({
+            status: 200,
+            data: response
+        })
     } catch (error) {
         console.log(error);
     }
