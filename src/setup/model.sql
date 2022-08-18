@@ -14,7 +14,7 @@ create table categories(
 
 create table news(
     news_id uuid default uuid_generate_v4(),
-    news_img text,
+    news_img text not null,
     news_title text not null,
     news_desc text not null,
     created_at timestamp default current_timestamp
