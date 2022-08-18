@@ -11,7 +11,19 @@ const postSubscriberModel = async ({subscriber_email}) => {
     }
 }
 
+const getSubscribersModel = async () => {
+    try {
+        const getSubscribersQuery = `
+        select * from subscribers;
+        `
+        return await fetchData(getSubscribersQuery)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 module.exports = {
-    postSubscriberModel
+    postSubscriberModel,
+    getSubscribersModel
 }

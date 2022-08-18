@@ -1,11 +1,11 @@
 const { fetchData } = require('../utils/postgres.js')
 
-const getNewsModel = async () => {
+const getNewsModel = async ({limit= 9, page = 1}) => {
     try {
         const getNewsQuery = `
-        select * from news;
+        select * from news limit $1 offset (($2 - 1) * $1);
         `
-        return await fetchData(getNewsQuery)
+        return await fetchData(getNewsQuery, limit, page)
     } catch (error) {
         console.log(error);
     }

@@ -1,9 +1,11 @@
 const { uploadimg } = require('../utils/fireBase.js')
 const { postNewsModel, getNewsModel, putNewsModel, deleteNewsModel } = require("../models/news.models");
+const sendMail = require('../utils/nodemailer.js');
+const { getSubscribersModel } = require('../models/subscribers.models.js');
 
 const getNews = async (req, res, next) => {
     try {
-        const response = await getNewsModel()
+        const response = await getNewsModel(req.query)
 
         if (response.error) return next(response)
 
@@ -28,10 +30,15 @@ const postNews = async (req, res, next) => {
         } else {
             req.body.news_img = ''
         }
-
+        
         const response = await postNewsModel(req.body)
+        let subscribers = await getSubscribersModel()
+
+        subscribers = subscribers.map(subscr => subscr.subscriber_email)
 
         if (response.error || !response.length) return next(response)
+
+        sendMail(subscribers, response[0])
 
         res.status(201).send({
             status: 201,
