@@ -1,5 +1,5 @@
-const { ref, uploadBytes, getDownloadURL } = require("firebase/storage");
-const { getFoodsModel } = require("../models/foods.models");
+const { getFoodsModel, deleteFoodsModel, postFoodModel, putFoodModel } = require("../models/foods.models");
+const { uploadimg } = require("../utils/fireBase");
 
 const getFoods = async (req, res, next) => {
     try {
@@ -16,24 +16,75 @@ const getFoods = async (req, res, next) => {
     }
 }
 
-const postFood = async (req, res) => {
+const postFood = async (req, res, next) => {
     try {
         const file = req.files?.img
-        const fileName = Date.now() + file?.name
 
-        const storageRef = ref(storage, `images/${fileName}`);
+        if (file?.name && file?.data) {
+            const fileName = Date.now() + file?.name
+            const path = `foods/${fileName}`
+            req.body.food_img = await uploadimg(file, path, res)
+        } else {
+            req.body.food_img = ''
+        }
+        
+        const response = await postFoodModel(req.body)
 
-        uploadBytes(storageRef, file.data)
-            .then(() => {
-                console.log('Uploaded a blob or file!');
-            }).catch(error => res.send({
-                status: 203,
-                message: error.message || error
-            }))
+        if (response.error || !response.length) return next(response)
 
-        req.body.food_img = await getDownloadURL(storageRef)
-
+        res.status(201).send({
+            status: 201,
+            message: 'successful created',
+            data: response
+        })
     } catch (error) {
         console.log(error);
     }
+}
+
+const putFood = async (req, res, next) => {
+    try {
+        const file = req.files?.img
+
+        if (file?.name && file?.data) {
+            const fileName = Date.now() + file?.name
+            const path = `food/${fileName}`
+            req.body.food_img = await uploadimg(file, path, res)
+        }
+
+        const response = await putFoodModel(req.body, req.params)
+
+        if (response.error || !response.length) return next(response)
+
+        res.status(201).send({
+            status: 201,
+            message: 'successful updated',
+            data: response
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const deleteFood = async (req, res, next) => {
+    try {
+        const response = await deleteFoodsModel(req.params)
+
+        if (response.error || !response.length) return next(response)
+
+        res.status(203).send({
+            status: 203,
+            message: 'successful deleted',
+            data: response
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+module.exports = {
+    getFoods,
+    postFood,
+    putFood,
+    deleteFood
 }

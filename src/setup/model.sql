@@ -8,7 +8,7 @@ create table subscribers(
 );
 
 create table categories(
-    category_id UUID default uuid_generate_v4(),
+    category_id UUID default uuid_generate_v4() primary key,
     category_name text not null unique
 );
 
@@ -34,5 +34,8 @@ create table foods(
     food_img text not null,
     food_name varchar(255) not null,
     food_price decimal(9, 2) not null,
-    food_stars int check(food_stars <= 5)
+    food_stars int check(food_stars <= 5) default 0,
+    count_of_vote int default 0,
+    food_category uuid references categories(category_id) not null
 );
+
