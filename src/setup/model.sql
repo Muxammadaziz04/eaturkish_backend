@@ -34,7 +34,7 @@ create table foods(
     food_img text not null,
     food_name varchar(255) not null,
     food_price decimal(9, 2) not null,
-    food_stars int check(food_stars <= 5) default 0,
+    food_stars int default 0,
     count_of_vote int default 0,
     food_category uuid references categories(category_id) not null
 );
