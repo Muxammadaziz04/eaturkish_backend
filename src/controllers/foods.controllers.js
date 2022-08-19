@@ -3,7 +3,7 @@ const { uploadimg } = require("../utils/fireBase");
 
 const getFoods = async (req, res, next) => {
     try {
-        const response = await getFoodsModel()
+        const response = await getFoodsModel(req.query)
 
         if (response.error) return next(response)
 

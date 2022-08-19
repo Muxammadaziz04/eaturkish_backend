@@ -1,6 +1,6 @@
 const { fetchData } = require('../utils/postgres.js')
 
-const getFoodsModel = async () => {
+const getFoodsModel = async ({category_id}) => {
     try {
         const getFoodsQuery = `
         select
@@ -10,9 +10,10 @@ const getFoodsModel = async () => {
             food_price,
             food_category,
             round((food_stars / nullif(count_of_vote, 0)), 1) as food_start
-        from foods;
+        from foods
+        where ${category_id ? 'food_category = $1' : true}
         `
-        return await fetchData(getFoodsQuery)
+        return await fetchData(getFoodsQuery, category_id)
     } catch (error) {
         console.log(error);
     }
