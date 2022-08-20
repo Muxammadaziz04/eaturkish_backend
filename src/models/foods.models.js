@@ -9,7 +9,7 @@ const getFoodsModel = async ({category_id}) => {
             food_name,
             food_price,
             food_category,
-            round((food_stars / nullif(count_of_vote, 0)), 1) as food_start
+            round((food_stars / nullif(count_of_vote, 0)), 1) as food_stars
         from foods
         where ${category_id ? 'food_category = $1' : true}
         `
@@ -22,7 +22,15 @@ const getFoodsModel = async ({category_id}) => {
 const getPopularFoodsModel = async () => {
     try {
         const getPopularFoodsQuery = `
-        select * from foods where  round((food_stars / nullif(count_of_vote, 0)), 1) >= 3
+        select 
+            food_id, 
+            food_img,
+            food_name,
+            food_price,
+            food_category,
+            round((food_stars / nullif(count_of_vote, 0)), 1) as food_stars
+        from foods 
+        where round((food_stars / nullif(count_of_vote, 0)), 1) >= 3 order by food_stars desc
         `
         return await fetchData(getPopularFoodsQuery)
     } catch (error) {
