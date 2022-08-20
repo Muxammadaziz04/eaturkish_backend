@@ -1,5 +1,8 @@
 const express = require('express')
+const cors = require('cors')
 const fileUpload = require('express-fileupload')
+
+const validation = require('./middlewares/validation.js')
 
 const categoryRouter = require('./routers/categories.routers.js')
 const subscriberRouter = require('./routers/subscribers.routers.js')
@@ -12,8 +15,10 @@ const PORT = process.env.PORT || 5000
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(fileUpload())
+app.use(validation)
 
 app.use(categoryRouter)
 app.use(subscriberRouter)
@@ -23,7 +28,7 @@ app.use(foodsRouter)
 app.use(votesRouter)
 
 app.use((error, req, res, next) => {
-    return res.send({ error: error.error?.message || "somethink went wrong" })
+    return res.send({ error: error.error?.message || error.message || "somethink went wrong" })
 })
 
 app.listen(PORT, () => console.log(`Server run on ${PORT} port`))

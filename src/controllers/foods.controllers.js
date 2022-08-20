@@ -1,9 +1,24 @@
-const { getFoodsModel, deleteFoodsModel, postFoodModel, putFoodModel } = require("../models/foods.models");
+const { getFoodsModel, deleteFoodsModel, postFoodModel, putFoodModel, getPopularFoodsModel } = require("../models/foods.models");
 const { uploadimg } = require("../utils/fireBase");
 
 const getFoods = async (req, res, next) => {
     try {
         const response = await getFoodsModel(req.query)
+
+        if (response.error) return next(response)
+
+        res.status(200).send({
+            status: 200,
+            data: response
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getPopularFoods = async (req, res, next) => {
+    try {
+        const response = await getPopularFoodsModel()
 
         if (response.error) return next(response)
 
@@ -84,6 +99,7 @@ const deleteFood = async (req, res, next) => {
 
 module.exports = {
     getFoods,
+    getPopularFoods,
     postFood,
     putFood,
     deleteFood
