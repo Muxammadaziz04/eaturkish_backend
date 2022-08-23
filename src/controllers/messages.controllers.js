@@ -1,8 +1,9 @@
-const { getMessagesModel, postMessageModel, deleteMessageModel } = require("../models/messages.models");
+const { getMessagesModel, postMessageModel, deleteMessageModel, getMessagesByIdModel } = require("../models/messages.models");
 
 const getMessages = async (req, res, next) => {
     try {
-        const response = await getMessagesModel(req.query)
+        const {message_id} = req.params
+        const response = message_id ? await getMessagesByIdModel(req.params) : await getMessagesModel(req.query)
 
         if (response.error) return next(response)
 

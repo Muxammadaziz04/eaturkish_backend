@@ -1,11 +1,22 @@
 const { fetchData } = require('../utils/postgres.js')
 
-const getMessagesModel = async ({limit = 3, page = 1}) => {
+const getMessagesModel = async ({limit, page}) => {
     try {
         const getNewsQuery = `
-        select * from messages limit $1 offset (($2 - 1) * $1);
+        select * from messages ${limit ? 'limit $1 offset (($2 - 1) * $1)' : ''};
         `
         return await fetchData(getNewsQuery, limit, page)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const getMessagesByIdModel = async ({message_id}) => {
+    try {
+        const getNewsQuery = `
+        select * from messages where message_id = $1;
+        `
+        return await fetchData(getNewsQuery, message_id)
     } catch (error) {
         console.log(error);
     }
@@ -35,6 +46,7 @@ const deleteMessageModel = async ({ message_id }) => {
 
 module.exports = {
     getMessagesModel,
+    getMessagesByIdModel,
     postMessageModel,
     deleteMessageModel
 }

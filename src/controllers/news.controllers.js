@@ -1,11 +1,12 @@
 const { uploadimg } = require('../utils/fireBase.js')
-const { postNewsModel, getNewsModel, putNewsModel, deleteNewsModel } = require("../models/news.models");
+const { postNewsModel, getNewsModel, putNewsModel, deleteNewsModel, getNewsByIdModel } = require("../models/news.models");
 const sendMail = require('../utils/nodemailer.js');
 const { getSubscribersModel } = require('../models/subscribers.models.js');
 
 const getNews = async (req, res, next) => {
     try {
-        const response = await getNewsModel(req.query)
+        const {news_id} = req.params
+        const response = news_id ? await getNewsByIdModel(req.params) : await getNewsModel(req.query)
 
         if (response.error) return next(response)
 

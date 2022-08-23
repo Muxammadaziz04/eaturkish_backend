@@ -19,6 +19,25 @@ const getFoodsModel = async ({category_id}) => {
     }
 }
 
+const getFoodByIdModel = async ({food_id}) => {
+    try {
+        const getFoodsQuery = `
+        select
+            food_id, 
+            food_img,
+            food_name,
+            food_price,
+            food_category,
+            round((food_stars / nullif(count_of_vote, 0)), 1) as food_stars
+        from foods
+        where food_id = $1
+        `
+        return await fetchData(getFoodsQuery, food_id)
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const getPopularFoodsModel = async () => {
     try {
         const getPopularFoodsQuery = `
@@ -80,6 +99,7 @@ const deleteFoodsModel = async ({ food_id }) => {
 
 module.exports = {
     getFoodsModel,
+    getFoodByIdModel,
     getPopularFoodsModel,
     postFoodModel,
     putFoodModel,

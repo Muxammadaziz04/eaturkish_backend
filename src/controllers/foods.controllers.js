@@ -1,10 +1,11 @@
-const { getFoodsModel, deleteFoodsModel, postFoodModel, putFoodModel, getPopularFoodsModel } = require("../models/foods.models");
+const { getFoodsModel, deleteFoodsModel, postFoodModel, putFoodModel, getPopularFoodsModel, getFoodByIdModel } = require("../models/foods.models");
 const { uploadimg } = require("../utils/fireBase");
 
 const getFoods = async (req, res, next) => {
     try {
-        const response = await getFoodsModel(req.query)
-
+        const { food_id } = req.params
+        const response = food_id ? await getFoodByIdModel(req.params) : await getFoodsModel(req.query)
+        
         if (response.error) return next(response)
 
         res.status(200).send({
@@ -42,7 +43,7 @@ const postFood = async (req, res, next) => {
         } else {
             req.body.food_img = ''
         }
-        
+
         const response = await postFoodModel(req.body)
 
         if (response.error || !response.length) return next(response)
